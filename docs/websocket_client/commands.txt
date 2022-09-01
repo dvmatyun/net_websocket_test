@@ -1,0 +1,38 @@
+//ws://127.0.0.1:42627/websocket?username=dvmatyun&loginToken=thisisdebug
+//wss://api.dvmatyun.ru/make-world/websocket?username=dvmatyun&loginToken=thisisdebug
+
+//-------
+//test:
+{"InMessageType": 3, "Topic": "newgame", "MessageString": "{\"gameName\":\"test\",\"maxPlayersAmount\":8,\"commonTurnInfo\":{\"currentTurn\":0,\"turnTimerSeconds\":20,\"maxTurns\":250,\"timerLeftSeconds\":20}}"}
+{"InMessageType": 4, "Topic": "initgame", "MessageString": "{\"intCa01\": \"3\", \"intCa02\": \"3\"}"}
+//-------
+
+//mark point:
+//obsolete: {"InMessageType": 2, "MessageString": "1;1"}
+
+//menu:
+{"InMessageType": 3, "Topic": "newgame", "MessageString": "{\"gameName\":\"test\",\"maxPlayersAmount\":8,\"commonTurnInfo\":{\"currentTurn\":0,\"turnTimerSeconds\":20,\"maxTurns\":250,\"timerLeftSeconds\":20}}"}
+{"InMessageType": 3, "Topic": "getgames"}
+{"InMessageType": 3, "Topic": "leavegame"}
+{"InMessageType": 3, "MessageString": "{\"message\": \"joingame\", \"guidCa\": \"GameGuidHere\"}"}
+//obsolete: {"InMessageType": 3, "MessageString": "{\"message\": \"startgame\", \"guidCa\": \"GameGuidHere\"}"}
+
+//game:
+//init by host:
+//obsolete {"InMessageType": 2, "Topic": "initmap", "MessageString": "{\"intCa01\": \"3\", \"intCa02\": \"3\"}"}
+{"InMessageType": 2, "Topic": "getmap"}
+
+//init / load game:
+{"InMessageType": 4, "Topic": "initgame", "MessageString": "{\"intCa01\": \"3\", \"intCa02\": \"3\"}"}
+{"InMessageType": 4, "Topic": "initload"}
+
+
+//complex actions:
+{"InMessageType": 2, "Topic": "clientaction", "MessageString": "{\"x\": \"1\", \"y\": \"2\", \"actionOptions\": {\"cellActionType\": \"town\", \"objectName\": \"\"}}"}
+
+//get actions for cell:
+{"InMessageType": 5, "Topic": "getoptions", "MessageString": "{\"x\": \"1\", \"y\": \"2\"}"}
+
+//Get game actions like "Science researches", "Cultural researches" and etc:
+
+{"InMessageType": 7, "Topic": "getgameactions", "MessageString": "{\"name\": \"lvl-2\", \"type\": \"Science\"}"}
