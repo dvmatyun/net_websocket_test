@@ -22,28 +22,33 @@ namespace WebsocketCommon.Models
         {
         }
 
+        public WebSocketAnswer(ISocketTopic socketTopic, Guid toWebsocket, object data, string error = null)
+            : this(socketTopic, new[] { toWebsocket }, data, error)
+        {
+        }
+
         public WebSocketAnswer(ISocketTopic socketTopic, IEnumerable<Guid> toWebsockets, object data, string error = null)
         {
             SocketTopic = socketTopic;
-            ToWebsockets = new HashSet<Guid>(toWebsockets);
+            ToWebsockets = toWebsockets;
             Error = error;
             SerializeObjectToString(data);
         }
 
         public WebSocketAnswer(Exception error, Guid toSocket)
         {
-            ToWebsockets = new HashSet<Guid> { toSocket };
+            ToWebsockets = new List<Guid> { toSocket };
             SocketTopic = new SocketTopic("error");
             Error = error.Message;
         }
 
-        private ISet<Guid> _toPlayers;
+        private IEnumerable<Guid> _toPlayers;
 
         [JsonIgnore]
-        public ISet<Guid> ToWebsockets
+        public IEnumerable<Guid> ToWebsockets
         {
-            get { return _toPlayers ??= new HashSet<Guid>(); }
-            set => _toPlayers = new HashSet<Guid>(value);
+            get { return _toPlayers ??= new List<Guid>(); }
+            set => _toPlayers = new List<Guid>(value);
         }
 
         [JsonIgnore]
@@ -59,7 +64,6 @@ namespace WebsocketCommon.Models
             {
                 Data = JsonConvert.SerializeObject(messageObj);
             }
-            
         }
 
         public string GetAnswerToUser()

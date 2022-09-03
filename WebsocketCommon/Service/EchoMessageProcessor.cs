@@ -9,12 +9,26 @@ namespace WebsocketCommon.Service
 {
     public class EchoMessageProcessor : IMessageProcessor<string, IWebSocketAnswer>
     {
-        public Task<IWebSocketAnswer> ProcessClientMessage(Guid id, string inMessage)
+        private ISocketTopic PongTopic = new SocketTopic("pong");
+
+        public IWebSocketAnswer PingMessageGetResponseOrNull(Guid id, string inMessage)
         {
+            if (inMessage == "ping")
+                return new WebSocketAnswer(PongTopic, id, null);
+
+            return null;
+        }
+
+        public Task<IWebSocketAnswer> ProcessClientMessageAsync(Guid id, string inMessage)
+        {
+            var pong = PingMessageGetResponseOrNull(id, inMessage);
+            if (pong != null)
+                return Task.FromResult(pong);
+
             var msg = JsonConvert.DeserializeObject<WebsocketMessage>(inMessage);
             if (msg?.SocketTopic == null)
-                throw new ArgumentException($"{nameof(ProcessClientMessage)} received topic is null!");
-            var answer = (IWebSocketAnswer)new WebSocketAnswer(msg.SocketTopic, new List<Guid> { id }, msg.Data, msg.Error);
+                throw new ArgumentException($"{nameof(ProcessClientMessageAsync)} received topic is null!");
+            var answer = (IWebSocketAnswer)new WebSocketAnswer(msg.SocketTopic, id, msg.Data, msg.Error);
             return Task.FromResult(answer);
         }
     }

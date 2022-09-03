@@ -29,6 +29,9 @@ namespace WebsocketCommon.Service
         public virtual async Task Handle(Guid id, WebSocket webSocket)
         {
             await WebsocketService.AddWebsocketConnectionAsync(id, webSocket);
+            /// For debug purpose:
+            _ = EmulateDisconnection(webSocket);
+            ///
             while (webSocket.State == WebSocketState.Open)
             {
                 try
@@ -43,10 +46,19 @@ namespace WebsocketCommon.Service
             }
         }
 
+        private async Task EmulateDisconnection(WebSocket webSocket)
+        {
+            await Task.Delay(6000);
+            if (webSocket.State == WebSocketState.Open)
+            {
+                webSocket.Abort();
+            }
+        }
+
         protected async Task InternalMessageHandler(Guid id, WebSocket webSocket)
         {
             var text = await ReceiveClientMessage(webSocket);
-            var message = await MessageProcessor.ProcessClientMessage(id, text);
+            var message = await MessageProcessor.ProcessClientMessageAsync(id, text);
             if (message != null && message.Topic != null)
                 await WebsocketService.SendMessageToSocketsAsync(message);
         }

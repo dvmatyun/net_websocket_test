@@ -1,8 +1,18 @@
 
 
 using NetWebsocketTest.Infrastructure;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+
+JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+{
+    Formatting = Formatting.None,
+    //Json serialization as camelCase for flutter ( "myEntity" : "this is value" )
+    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver(),
+    Converters = new List<JsonConverter> { new Newtonsoft.Json.Converters.StringEnumConverter() },
+    NullValueHandling = NullValueHandling.Ignore,
+};
 
 // Add services to the container.
 
